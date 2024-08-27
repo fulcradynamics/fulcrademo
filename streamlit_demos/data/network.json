@@ -1,0 +1,71 @@
+{
+  "nodes": [
+    { "data": { "id": 1, "label": "Road", "name": "Brigade Orchards Road" } },
+    { "data": { "id": 2, "label": "Shop", "name": "Bharatiya City Mall" } },
+    {
+      "data": {
+        "id": 3,
+        "label": "Sports Center",
+        "name": "Padukone Dravid Sports Center"
+      }
+    },
+    { "data": { "id": 4, "label": "Road", "name": "Hennur Main Road" } },
+    { "data": { "id": 5, "label": "Road", "name": "Bangalore Airport Road" } }
+  ],
+  "edges": [
+    {
+      "data": {
+        "id": 10,
+        "label": "Road",
+        "name": "Brigade Orchards Spinal Road",
+        "source": 1,
+        "target": 2
+      }
+    },
+    {
+      "data": {
+        "id": 11,
+        "label": "Road",
+        "name": "Hennur Main Road",
+        "source": 1,
+        "target": 3
+      }
+    },
+    {
+      "data": {
+        "id": 12,
+        "label": "Road",
+        "name": "Bangalore Airport Road",
+        "source": 3,
+        "target": 4
+      }
+    },
+    {
+      "data": {
+        "id": 13,
+        "label": "Road",
+        "name": "Brigade Orchards Spinal Road",
+        "source": 1,
+        "target": 5
+      }
+    },
+    {
+      "data": {
+        "id": 14,
+        "label": "Road",
+        "name": "Hennur Main Road",
+        "source": 4,
+        "target": 1
+      }
+    },
+    {
+      "data": {
+        "id": 15,
+        "label": "Road",
+        "name": "Hennur Main Road",
+        "source": 2,
+        "target": 1
+      }
+    }
+  ]
+}
