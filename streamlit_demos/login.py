@@ -1,6 +1,6 @@
 import streamlit as st
 from streamlit.components.v1 import html
-from utils.menu import menu
+from .utils import menu
 import datetime
 import time
 

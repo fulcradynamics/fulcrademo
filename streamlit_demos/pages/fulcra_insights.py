@@ -3,7 +3,7 @@ from fulcra_api.core import FulcraAPI
 from collections import Counter
 import pandas as pd
 import altair as alt
-from utils.utils import (
+from ..utils.utils import (
     get_current_year_window,
     get_current_week_dates,
     filter_and_rank_locations,
