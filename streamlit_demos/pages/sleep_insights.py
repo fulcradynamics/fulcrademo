@@ -1,7 +1,7 @@
 from collections import Counter
 import streamlit as st
 from fulcra_api.core import FulcraAPI
-from utils import get_current_week_dates, get_current_year_window
+from utils.utils import get_current_week_dates, get_current_year_window
 from menu import menu_with_redirect
 
 st.header("Sleep insights")

@@ -1,10 +1,10 @@
 from collections import Counter
 import streamlit as st
 from fulcra_api.core import FulcraAPI
-from utils import get_current_week_dates, get_current_year_window
+from utils.utils import get_current_week_dates, get_current_year_window
 import pandas as pd
 import altair as alt
-from menu import menu_with_redirect
+from utils.menu import menu_with_redirect
 
 
 def get_top_participants(calendar_data):
@@ -32,10 +32,7 @@ menu_with_redirect()
 fulcra = FulcraAPI()
 fulcra.fulcra_cached_access_token = st.session_state["access_token"]
 
-fulcra_userid = "90814fff-bddd-4ab3-85e3-6139d714c113"
-# fulcra_userid = "a24a9667-c2c6-4bbf-9a0f-36ea0afcb521"
-
-calendars = fulcra.calendars(fulcra_userid)
+calendars = fulcra.calendars()
 calendar_select = [calendar["calendar_name"] for calendar in calendars]
 selected_option = st.selectbox("Choose calendar", calendar_select)
 calendar_id = next(
@@ -60,30 +57,30 @@ week_period = st.date_input(
     key="daterange",
 )
 
-calendar_data = fulcra.calendar_events(
-    start_time=week_period[0],
-    end_time=week_period[1],
-    calendar_ids=[calendar_id],
-    fulcra_userid=fulcra_userid,
-)
-
-# Get top participants
-if calendar_data:
-    top_participants = get_top_participants(calendar_data)
-    df = pd.DataFrame(top_participants, columns=["Participant", "Meetings"])
-    bar_chart = (
-        alt.Chart(df)
-        .mark_bar()
-        .encode(
-            x=alt.X("Meetings:Q", title="Number of Meetings"),
-            y=alt.Y("Participant:N", sort="-x", title="Participant"),
-            tooltip=["Participant", "Meetings"],
-        )
-        .properties(
-            width=700, height=400, title="Top Participants by Number of Meetings"
-        )
-        .interactive()
+if (len(week_period) == 2):
+    calendar_data = fulcra.calendar_events(
+        start_time=week_period[0],
+        end_time=week_period[1],
+        calendar_ids=[calendar_id],
     )
-    st.altair_chart(bar_chart, use_container_width=True)
-    st.write("Top Participants:")
-    st.dataframe(df)
+
+    # Get top participants
+    if calendar_data:
+        top_participants = get_top_participants(calendar_data)
+        df = pd.DataFrame(top_participants, columns=["Participant", "Meetings"])
+        bar_chart = (
+            alt.Chart(df)
+            .mark_bar()
+            .encode(
+                x=alt.X("Meetings:Q", title="Number of Meetings"),
+                y=alt.Y("Participant:N", sort="-x", title="Participant"),
+                tooltip=["Participant", "Meetings"],
+            )
+            .properties(
+                width=700, height=400, title="Top Participants by Number of Meetings"
+            )
+            .interactive()
+        )
+        st.altair_chart(bar_chart, use_container_width=True)
+        st.write("Top Participants:")
+        st.dataframe(df)
