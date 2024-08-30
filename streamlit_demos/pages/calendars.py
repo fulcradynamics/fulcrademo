@@ -4,6 +4,7 @@ from fulcra_api.core import FulcraAPI
 from utils import get_current_week_dates, get_current_year_window
 import pandas as pd
 import altair as alt
+from menu import menu_with_redirect
 
 
 def get_top_participants(calendar_data):
@@ -26,12 +27,15 @@ def get_top_participants(calendar_data):
 
 
 st.header("Calendar insights")
-
+menu_with_redirect()
 # Set authenticated fulcra access token
 fulcra = FulcraAPI()
 fulcra.fulcra_cached_access_token = st.session_state["access_token"]
 
-calendars = fulcra.calendars()
+fulcra_userid = "90814fff-bddd-4ab3-85e3-6139d714c113"
+# fulcra_userid = "a24a9667-c2c6-4bbf-9a0f-36ea0afcb521"
+
+calendars = fulcra.calendars(fulcra_userid)
 calendar_select = [calendar["calendar_name"] for calendar in calendars]
 selected_option = st.selectbox("Choose calendar", calendar_select)
 calendar_id = next(
@@ -57,7 +61,10 @@ week_period = st.date_input(
 )
 
 calendar_data = fulcra.calendar_events(
-    start_time=week_period[0], end_time=week_period[1], calendar_ids=[calendar_id]
+    start_time=week_period[0],
+    end_time=week_period[1],
+    calendar_ids=[calendar_id],
+    fulcra_userid=fulcra_userid,
 )
 
 # Get top participants

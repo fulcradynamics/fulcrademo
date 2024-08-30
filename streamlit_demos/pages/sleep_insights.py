@@ -2,10 +2,10 @@ from collections import Counter
 import streamlit as st
 from fulcra_api.core import FulcraAPI
 from utils import get_current_week_dates, get_current_year_window
-import pandas as pd
-import altair as alt
+from menu import menu_with_redirect
 
 st.header("Sleep insights")
+menu_with_redirect()
 
 # Set authenticated fulcra access token
 fulcra = FulcraAPI()

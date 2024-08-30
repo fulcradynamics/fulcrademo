@@ -11,6 +11,8 @@ streamlit = "^1.37.1"
 st-link-analysis = "^0.2.0"
 fulcra-api = "^0.1.18"
 pandas = "^2.2.2"
+streamlit-auth0-component = "^0.1.5"
+st-pages = "^1.0.1"
 
 
 [build-system]

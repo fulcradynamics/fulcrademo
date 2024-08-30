@@ -8,12 +8,17 @@ from utils import (
     get_current_week_dates,
     filter_and_rank_locations,
 )
+from menu import menu_with_redirect
 
 st.header("Fulcra Location Insights")
+menu_with_redirect()
 
 # Set authenticated fulcra access token
 fulcra = FulcraAPI()
 fulcra.fulcra_cached_access_token = st.session_state["access_token"]
+
+# fulcra_userid = "90814fff-bddd-4ab3-85e3-6139d714c113"
+fulcra_userid = "a24a9667-c2c6-4bbf-9a0f-36ea0afcb521"
 
 # Create a period widget for current week
 start_of_week, end_of_week = get_current_week_dates()
@@ -37,6 +42,7 @@ if len(week_period) > 1:
         reverse_geocode=True,
         sample_rate=5 * 60,
         change_meters=50,
+        fulcra_userid=fulcra_userid,
     )
 
 col1, col2 = st.columns(2)
