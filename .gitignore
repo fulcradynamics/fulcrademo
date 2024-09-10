@@ -1,5 +1,6 @@
 # Byte-compiled / optimized / DLL files
-.streamlit/
+.streamlit/*
+!.streamlit/config.toml
 __pycache__/
 *.py[cod]
 *$py.class
