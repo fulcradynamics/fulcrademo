@@ -70,8 +70,12 @@ if users:
             if dataset_user:
                 fulcra_user_id = dataset_user["fulcra_userid"]
                 df = get_hrv_data(fulcra_user_id, start_date, end_date)
-                personal_best_day = df.idxmax()  # Gets the date with the max HRV
-                personal_best_hrv = df.max()  # Gets the maximum step count
+                personal_best_day = (
+                    df["max_heart_rate_variability_sdnn"].idxmax().date()
+                )  # Gets the date with the max HRV
+                personal_best_hrv = df[
+                    "max_heart_rate_variability_sdnn"
+                ].max()  # Gets the maximum step count
 
                 # Display in a single card with Markdown
                 cols[index].markdown(
