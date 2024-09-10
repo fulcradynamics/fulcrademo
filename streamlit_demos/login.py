@@ -1,6 +1,6 @@
 import streamlit as st
 from streamlit.components.v1 import html
-from .utils import menu
+from utils.menu import menu
 import datetime
 import time
 
@@ -43,4 +43,4 @@ device_code, uri, _ = fulcra._request_device_code(
 st.button("Login to fulcra", on_click=open_page, args=(uri, fulcra, device_code))
 menu()
 if "access_token" in st.session_state:
-    st.switch_page("pages/fulcra_insights.py")
+    st.switch_page("pages/walk_insights.py")
