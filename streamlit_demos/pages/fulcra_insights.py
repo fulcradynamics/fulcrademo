@@ -3,12 +3,12 @@ from fulcra_api.core import FulcraAPI
 from collections import Counter
 import pandas as pd
 import altair as alt
-from utils.utils import (
+from streamlit_demos.utils.utils import (
     get_current_year_window,
     get_current_week_dates,
     filter_and_rank_locations,
 )
-from utils.menu import menu_with_redirect
+from streamlit_demos.utils.menu import menu_with_redirect
 
 st.header("Fulcra Location Insights")
 menu_with_redirect()

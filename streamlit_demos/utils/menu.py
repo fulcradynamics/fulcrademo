@@ -33,6 +33,10 @@ def authenticated_menu():
         icon=":material/logout:",
     )
 
+    st.sidebar.divider()
+    discord_url = "https://discord.com/invite/aunahVEnPU"
+    st.sidebar.markdown("Join our discord channel [link](%s)" % discord_url)
+
 
 def unauthenticated_menu():
     # Show a navigation menu for unauthenticated users

@@ -1,13 +1,15 @@
-import streamlit as st
+from datetime import date, timedelta
+
 import pandas as pd
+import streamlit as st
 from fulcra_api.core import FulcraAPI
-from datetime import date, datetime, time, timedelta
+from streamlit_demos.utils.menu import menu_with_redirect
+from streamlit_demos.utils.utils import get_user_name
 
-from utils.utils import get_user_name
-from utils.menu import menu_with_redirect
-
-
-st.set_page_config(layout="wide")
+st.set_page_config(
+    layout="wide",
+    menu_items={"Get Help": "https://discord.com/invite/aunahVEnPU"},
+)
 fulcra = FulcraAPI()
 
 st.header("HRV Insights")
@@ -24,12 +26,25 @@ except Exception as exc:
     datasets = []
     st.write(exc)
 
-season_dates = {
-    "Spring": (date(2024, 3, 20), date(2024, 6, 20)),
-    "Summer": (date(2024, 6, 21), date(2024, 9, 22)),
-    "Fall": (date(2024, 9, 23), date(2024, 12, 20)),
-    "Winter": (date(2024, 12, 21), date(2025, 3, 19)),
-}
+
+def get_season_dates(year):
+    return {
+        "Spring": (date(year, 3, 20), date(year, 6, 20)),
+        "Summer": (date(year, 6, 21), date(year, 9, 22)),
+        "Fall": (date(year, 9, 23), date(year, 12, 20)),
+        "Winter": (date(year, 12, 21), date(year + 1, 3, 19)),
+    }
+
+
+# Adding the year selector
+year = st.selectbox(
+    "Select Year",
+    options=list(range(2020, 2030)),
+    index=4,
+)  # Select a year range as per your requirement
+
+# Get the season dates for the selected year
+season_dates = get_season_dates(year)
 
 col1, col2 = st.columns([2, 2])
 
@@ -47,15 +62,13 @@ with col2:
 def get_hrv_data(fulcra_user_id, start_date, end_date) -> pd.DataFrame:
     df = fulcra.metric_time_series(
         start_time=start_date,
-        end_time=start_date + timedelta(days=60),
-        sample_rate=1,
+        end_time=end_date,
+        sample_rate=86400,
         metric="HeartRateVariabilitySDNN",
         fulcra_userid=fulcra_user_id if fulcra_user_id else None,
         calculations=["max"],
     )
-    daily_hrv = df.resample("D").max()
-    daily_hrv = daily_hrv[["max_heart_rate_variability_sdnn"]]
-    return daily_hrv
+    return df
 
 
 start_date, end_date = season_dates[season]
@@ -84,7 +97,7 @@ if users:
                         <h2>Personal Best</h2>
                         <h3>{get_user_name(dataset_user)}</h3>
                         <p>Day: <strong>{personal_best_day}</strong></p>
-                        <p>HRV: <strong style="color:green">{personal_best_hrv}</strong></p>
+                        <p>HRV: <strong style="color:green">{round(personal_best_hrv, 2)}</strong></p>
                     </div>
                     """,
                     unsafe_allow_html=True,

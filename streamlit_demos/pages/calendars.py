@@ -1,10 +1,10 @@
 from collections import Counter
 import streamlit as st
 from fulcra_api.core import FulcraAPI
-from utils.utils import get_current_week_dates, get_current_year_window
+from streamlit_demos.utils.utils import get_current_week_dates, get_current_year_window
 import pandas as pd
 import altair as alt
-from utils.menu import menu_with_redirect
+from streamlit_demos.utils.menu import menu_with_redirect
 
 
 def get_top_participants(calendar_data):
@@ -57,7 +57,7 @@ week_period = st.date_input(
     key="daterange",
 )
 
-if (len(week_period) == 2):
+if len(week_period) == 2:
     calendar_data = fulcra.calendar_events(
         start_time=week_period[0],
         end_time=week_period[1],
