@@ -28,6 +28,12 @@ def authenticated_menu():
     )
 
     st.sidebar.page_link(
+        "pages/day_in_glance.py",
+        label="Day in Glance",
+        icon=":material/eyeglasses:",
+    )
+
+    st.sidebar.page_link(
         "pages/logout.py",
         label="Logout",
         icon=":material/logout:",

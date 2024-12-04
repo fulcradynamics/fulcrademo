@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 from collections import Counter
+from icalendar import Calendar, Event
 
 
 def get_current_week_dates():
@@ -48,3 +49,20 @@ def get_user_name(dataset):
         if dataset["fulcra_user_name"] != dataset["fulcra_userid"]
         else "Me"
     )
+
+
+def create_ics(df):
+    cal = Calendar()
+    cal.add("prodid", "-//Fulcra Calendar//fulcradynamics.com//")
+    cal.add("version", "2.0")
+
+    for index, row in df.iterrows():
+        event = Event()
+        event.add("summary", row["status"])
+        event.add("dtstart", row["start_time"])
+        event.add("dtend", row["end_time"])
+        event.add("dtstamp", datetime.now())
+        cal.add_component(event)
+
+    ics_data = cal.to_ical()
+    return ics_data

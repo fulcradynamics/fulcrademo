@@ -12,6 +12,7 @@ st.set_page_config(
 )
 fulcra = FulcraAPI()
 
+
 st.header("HRV Insights")
 menu_with_redirect()
 # Set authenticated fulcra access token
