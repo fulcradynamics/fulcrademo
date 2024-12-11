@@ -185,23 +185,23 @@ def choose_day_for_map(users, chosen_date, change_meters, sample_rate, drop_nas)
         if dataset_user:
             fulcra_user_id = dataset_user["fulcra_userid"]
 
-        # with col1:
-        #     st.title("Apple Location Updates")
-        #     apple_location_updates = fulcra.apple_location_updates(
-        #         start_of_day,
-        #         end_of_day,
-        #         fulcra_user_id,
-        #     )
-        #     df_location_updates = pd.DataFrame(apple_location_updates)
-        #     st.write(df_location_updates)
-        #
-        # with col2:
-        #     st.title("Apple Location Visits")
-        #     apple_location_visits = fulcra.apple_location_visits(
-        #         start_of_day, end_of_day, fulcra_user_id
-        #     )
-        #     df_location_visits = pd.DataFrame(apple_location_visits)
-        #     st.write(df_location_visits)
+        with col1:
+            st.title("Apple Location Updates")
+            apple_location_updates = fulcra.apple_location_updates(
+                start_of_day,
+                end_of_day,
+                fulcra_user_id,
+            )
+            df_location_updates = pd.DataFrame(apple_location_updates)
+            st.write(df_location_updates)
+
+        with col2:
+            st.title("Apple Location Visits")
+            apple_location_visits = fulcra.apple_location_visits(
+                start_of_day, end_of_day, fulcra_user_id
+            )
+            df_location_visits = pd.DataFrame(apple_location_visits)
+            st.write(df_location_visits)
 
         if change_meters == 0:
             map_location_data = fulcra.location_time_series(
@@ -227,10 +227,10 @@ def choose_day_for_map(users, chosen_date, change_meters, sample_rate, drop_nas)
 
         # Create a list of [longitude, latitude] pairs
         path = map_loc_dataframe[["lon", "lat"]].values.tolist()
-        with col1:
-            col1.title("Apple workouts")
-            df_workouts = apple_workouts(start_of_day, end_of_day, fulcra_user_id)
-            col1.write(df_workouts)
+        # with col1:
+        #     col1.title("Apple workouts")
+        #     df_workouts = apple_workouts(start_of_day, end_of_day, fulcra_user_id)
+        #     col1.write(df_workouts)
 
         # with col2:
         # col2.title("Sleep Data")
