@@ -177,49 +177,37 @@ def choose_day_for_map(users, chosen_date, change_meters, sample_rate, drop_nas)
         start_of_day = datetime.combine(chosen_date, time.min)
         end_of_day = datetime.combine(chosen_date, time.max)
 
-        col1, col2 = st.columns(2)
-
         dataset_user = next(
             (item for item in datasets if get_user_name(item) == users), None
         )
         if dataset_user:
             fulcra_user_id = dataset_user["fulcra_userid"]
 
-        with col1:
-            st.title("Apple Location Updates")
-            apple_location_updates = fulcra.apple_location_updates(
-                start_of_day,
-                end_of_day,
-                fulcra_user_id,
-            )
-            df_location_updates = pd.DataFrame(apple_location_updates)
-            st.write(df_location_updates)
-
-        with col2:
-            st.title("Apple Location Visits")
-            apple_location_visits = fulcra.apple_location_visits(
-                start_of_day, end_of_day, fulcra_user_id
-            )
-            df_location_visits = pd.DataFrame(apple_location_visits)
-            st.write(df_location_visits)
+        st.title("Apple Location Updates")
+        apple_location_updates = fulcra.apple_location_updates(
+            start_of_day,
+            end_of_day,
+            fulcra_user_id,
+        )
+        df_location_updates = pd.DataFrame(apple_location_updates)
+        st.write(df_location_updates)
 
         if change_meters == 0:
-            map_location_data = fulcra.location_time_series(
-                start_time=start_of_day,
-                end_time=end_of_day,
-                sample_rate=sample_rate,
-                reverse_geocode=False,
-                fulcra_userid=fulcra_user_id,
-            )
+            params = {
+                "start_time": start_of_day,
+                "end_time": end_of_day,
+                "sample_rate": sample_rate,
+                "fulcra_userid": fulcra_user_id,
+            }
         else:
-            map_location_data = fulcra.location_time_series(
-                start_time=start_of_day,
-                end_time=end_of_day,
-                sample_rate=sample_rate,
-                change_meters=change_meters,
-                reverse_geocode=False,
-                fulcra_userid=fulcra_user_id,
-            )
+            params = {
+                "start_time": start_of_day,
+                "end_time": end_of_day,
+                "sample_rate": sample_rate,
+                "change_meters": change_meters,
+                "fulcra_userid": fulcra_user_id,
+            }
+        map_location_data = get_location_time_series(**params)
         map_loc_dataframe = pd.DataFrame(map_location_data)
         map_loc_dataframe = map_loc_dataframe.rename(columns={"long": "lon"})
         if drop_nas == "Yes":
@@ -227,20 +215,27 @@ def choose_day_for_map(users, chosen_date, change_meters, sample_rate, drop_nas)
 
         # Create a list of [longitude, latitude] pairs
         path = map_loc_dataframe[["lon", "lat"]].values.tolist()
-        # with col1:
-        #     col1.title("Apple workouts")
-        #     df_workouts = apple_workouts(start_of_day, end_of_day, fulcra_user_id)
-        #     col1.write(df_workouts)
 
-        # with col2:
-        # col2.title("Sleep Data")
-        # df_sleep_data = fulcra.metric_time_series(
-        #     start_time=start_of_day,
-        #     end_time=end_of_day,
-        #     sample_rate=300,
-        #     metric="SleepStage",
-        # )
-        # col2.write(df_sleep_data)
+        col1, col2 = st.columns(2)
+        with col1:
+            workouts = get_apple_workouts(start_of_day, end_of_day, fulcra_user_id)
+            df_workouts = pd.DataFrame(
+                [
+                    {
+                        "start_date": item.get("start_date"),
+                        "end_date": item.get("end_date"),
+                        "duration": item.get("duration"),
+                        "workout_activity_type": item.get("workout_activity_type"),
+                    }
+                    for item in workouts
+                ]
+            )
+            col1.title("Apple workouts")
+            col1.write(df_workouts)
+
+        with col2:
+            col2.title("Location Time series")
+            col2.write(map_loc_dataframe)
 
         df_sorted = calculate_movements(map_loc_dataframe)
         # display_movements_map(map_loc_dataframe, df_sorted)
@@ -259,11 +254,11 @@ def choose_day_for_map(users, chosen_date, change_meters, sample_rate, drop_nas)
                 type="PathLayer",
                 data=path_data,
                 pickable=True,
-                width_scale=20,
+                width_scale=10,
                 width_min_pixels=1,
                 get_color=[255, 0, 0],
                 get_path="path",
-                get_width=2,
+                get_width=1,
             )
             r = pdk.Deck(
                 layers=[layer],
@@ -271,6 +266,27 @@ def choose_day_for_map(users, chosen_date, change_meters, sample_rate, drop_nas)
                 map_style="mapbox://styles/mapbox/streets-v11",
             )
             st.pydeck_chart(r)
+
+
+@st.cache
+def get_apple_workouts(start_of_day, end_of_day, fulcra_user_id):
+    workouts = apple_workouts(start_of_day, end_of_day, fulcra_user_id)
+    return workouts
+
+
+@st.cache
+def get_location_time_series(
+    start_time, end_time, sample_rate, change_meters=None, fulcra_userid=""
+):
+    map_location_data = fulcra.location_time_series(
+        start_time=start_time,
+        end_time=end_time,
+        sample_rate=sample_rate,
+        reverse_geocode=False,
+        change_meters=change_meters,
+        fulcra_userid=fulcra_userid,
+    )
+    return map_location_data
 
 
 def calculate_movements(df):
