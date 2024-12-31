@@ -254,7 +254,7 @@ def choose_day_for_map(users, chosen_date, change_meters, sample_rate, drop_nas)
                 type="PathLayer",
                 data=path_data,
                 pickable=True,
-                width_scale=10,
+                width_scale=6,
                 width_min_pixels=1,
                 get_color=[255, 0, 0],
                 get_path="path",
